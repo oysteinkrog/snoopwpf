@@ -13,11 +13,6 @@ using SnoopWPF.Agent.Contracts;
 [McpServerToolType]
 public sealed class GetAncestorsTool(ISnoopInspector inspector)
 {
-    private static readonly JsonSerializerOptions SerializerOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = false,
-    };
 
     [McpServerTool(Name = "wpf_get_ancestors")]
     [Description("Get the ancestor chain from a node up to the root (or up to maxLevels ancestors). " +
@@ -32,7 +27,7 @@ public sealed class GetAncestorsTool(ISnoopInspector inspector)
         try
         {
             var result = await inspector.GetAncestorsAsync(nodeId, maxLevels, ct).ConfigureAwait(false);
-            return JsonSerializer.Serialize(result, SerializerOptions);
+            return JsonSerializer.Serialize(result, ToolSerializerOptions.Default);
         }
         catch (SnoopException ex)
         {

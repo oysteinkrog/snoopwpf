@@ -13,11 +13,6 @@ using SnoopWPF.Agent.Contracts;
 [McpServerToolType]
 public sealed class SessionInfoTool(ISnoopInspector inspector)
 {
-    private static readonly JsonSerializerOptions SerializerOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = false,
-    };
 
     [McpServerTool(Name = "wpf_get_session_info")]
     [Description("Get session info: process name, PID, .NET version, dispatchers (with window nodeIds), capabilities, and whether mutation is enabled.")]
@@ -26,7 +21,7 @@ public sealed class SessionInfoTool(ISnoopInspector inspector)
         try
         {
             var result = await inspector.GetSessionInfoAsync(ct).ConfigureAwait(false);
-            return JsonSerializer.Serialize(result, SerializerOptions);
+            return JsonSerializer.Serialize(result, ToolSerializerOptions.Default);
         }
         catch (SnoopException ex)
         {

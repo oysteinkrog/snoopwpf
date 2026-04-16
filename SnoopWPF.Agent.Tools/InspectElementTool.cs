@@ -13,11 +13,6 @@ using SnoopWPF.Agent.Contracts;
 [McpServerToolType]
 public sealed class InspectElementTool(ISnoopInspector inspector)
 {
-    private static readonly JsonSerializerOptions SerializerOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = false,
-    };
 
     [McpServerTool(Name = "wpf_inspect_element")]
     [Description("Get a rich summary of a single WPF element: type, name, path from root, parent, dimensions, " +
@@ -30,7 +25,7 @@ public sealed class InspectElementTool(ISnoopInspector inspector)
         try
         {
             var result = await inspector.InspectElementAsync(nodeId, ct).ConfigureAwait(false);
-            return JsonSerializer.Serialize(result, SerializerOptions);
+            return JsonSerializer.Serialize(result, ToolSerializerOptions.Default);
         }
         catch (SnoopException ex)
         {

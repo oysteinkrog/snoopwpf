@@ -15,11 +15,6 @@ using SnoopWPF.Agent.Contracts.Dtos;
 [McpServerToolType]
 public sealed class FindElementsTool(ISnoopInspector inspector)
 {
-    private static readonly JsonSerializerOptions SerializerOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = false,
-    };
 
     [McpServerTool(Name = "wpf_find_elements")]
     [Description("Search the visual tree for elements matching criteria. Filter by type name (substring match), " +
@@ -39,7 +34,7 @@ public sealed class FindElementsTool(ISnoopInspector inspector)
         try
         {
             var result = await inspector.FindElementsAsync(typeName, name, rootNodeId, conditions, treeType, maxResults, ct).ConfigureAwait(false);
-            return JsonSerializer.Serialize(result, SerializerOptions);
+            return JsonSerializer.Serialize(result, ToolSerializerOptions.Default);
         }
         catch (SnoopException ex)
         {

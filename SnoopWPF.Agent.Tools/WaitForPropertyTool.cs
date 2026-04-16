@@ -13,11 +13,6 @@ using SnoopWPF.Agent.Contracts;
 [McpServerToolType]
 public sealed class WaitForPropertyTool(ISnoopInspector inspector)
 {
-    private static readonly JsonSerializerOptions SerializerOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = false,
-    };
 
     [McpServerTool(Name = "wpf_wait_for_property")]
     [Description(
@@ -38,7 +33,7 @@ public sealed class WaitForPropertyTool(ISnoopInspector inspector)
         {
             var wpfLocator = WpfLocatorParser.Parse(locator);
             var result = await inspector.WaitForPropertyAsync(wpfLocator, propertyName, expectedValue, timeoutMs, presenceExpected, ct).ConfigureAwait(false);
-            return JsonSerializer.Serialize(result, SerializerOptions);
+            return JsonSerializer.Serialize(result, ToolSerializerOptions.Default);
         }
         catch (SnoopException ex)
         {

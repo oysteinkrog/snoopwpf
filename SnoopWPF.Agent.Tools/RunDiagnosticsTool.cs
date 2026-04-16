@@ -14,11 +14,6 @@ using SnoopWPF.Agent.Contracts;
 [McpServerToolType]
 public sealed class RunDiagnosticsTool(ISnoopInspector inspector)
 {
-    private static readonly JsonSerializerOptions SerializerOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = false,
-    };
 
     [McpServerTool(Name = "wpf_run_diagnostics")]
     [Description("Run diagnostic providers and return issues found in the WPF application. " +
@@ -36,7 +31,7 @@ public sealed class RunDiagnosticsTool(ISnoopInspector inspector)
         try
         {
             var result = await inspector.RunDiagnosticsAsync(nodeId, providers, minLevel, cursor, take, ct).ConfigureAwait(false);
-            return JsonSerializer.Serialize(result, SerializerOptions);
+            return JsonSerializer.Serialize(result, ToolSerializerOptions.Default);
         }
         catch (SnoopException ex)
         {

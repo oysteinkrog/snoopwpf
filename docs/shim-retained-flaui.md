@@ -1,7 +1,7 @@
 # FlaUI-Retained Scenarios
 
-**Bead:** M2-16 (bd-2co) — Coverage-gap closure per PR-1 outcome  
-**Audit source:** COVERAGE-GAP-AUDIT.md (M0-06, bd-3s4)  
+**Bead:** M2-16 (bd-2co) — Coverage-gap closure per PR-1 outcome
+**Audit source:** COVERAGE-GAP-AUDIT.md (M0-06, bd-3s4)
 **Date:** 2026-04-16
 
 ---
@@ -22,7 +22,7 @@ The active FlaUI fallback count is **2**, which is below the M2 gate threshold o
 
 ### SCENARIO FAMILY 13 — Analysis/Explorer
 
-**Feature file:** `Features/Analysis/Explorer.feature`  
+**Feature file:** `Features/Analysis/Explorer.feature`
 **Scenarios:** 01 Opens and shows student list, 02 Shows downloadable content, 03 Close returns to Analysis
 
 **Blocking reason:** Scenario 01 (student list) directly exercises the unfiltered 500+ item
@@ -43,7 +43,7 @@ selection lands, or when MC migrates to a dedicated `wpf_inspect_visible_items` 
 
 ### SCENARIO FAMILY 15 — Analysis/Capture
 
-**Feature file:** `Features/Analysis/Capture.feature`  
+**Feature file:** `Features/Analysis/Capture.feature`
 **Scenarios:** 01–05 (SC/MC Capture with user, MC with activity, Manual trigger, Microphone trigger)
 
 **Blocking reason:** Scenarios 04 (Manual trigger) and 05 (Microphone trigger) require

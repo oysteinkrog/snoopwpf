@@ -13,11 +13,6 @@ using SnoopWPF.Agent.Contracts;
 [McpServerToolType]
 public sealed class GetBindingInfoTool(ISnoopInspector inspector)
 {
-    private static readonly JsonSerializerOptions SerializerOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = false,
-    };
 
     [McpServerTool(Name = "wpf_get_binding_info")]
     [Description("Get detailed data binding information for a specific property on a WPF element. " +
@@ -33,7 +28,7 @@ public sealed class GetBindingInfoTool(ISnoopInspector inspector)
         try
         {
             var result = await inspector.GetBindingInfoAsync(nodeId, propertyName, ct).ConfigureAwait(false);
-            return JsonSerializer.Serialize(result, SerializerOptions);
+            return JsonSerializer.Serialize(result, ToolSerializerOptions.Default);
         }
         catch (SnoopException ex)
         {
