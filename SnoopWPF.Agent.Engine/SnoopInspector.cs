@@ -282,6 +282,9 @@ public sealed class SnoopInspector : ISnoopInspector, IDisposable
             // Clamp includeProperties to max 10.
             var propNames = includeProperties?.Take(10).ToList();
 
+            // Clamp maxDepth at engine layer (tool schema advertises max: 10).
+            int effectiveMaxDepth = Math.Min(Math.Max(maxDepth, 1), InputConstants.MaxTreeDepth);
+
             var treeTypeEnum = ParseTreeType(treeType);
             using var treeService = TreeService.From(treeTypeEnum);
 
@@ -299,7 +302,7 @@ public sealed class SnoopInspector : ISnoopInspector, IDisposable
             var truncated = false;
             const int maxNodes = 500;
 
-            var rootDto = this.BuildNodeDtoRecursive(rootItem, 0, maxDepth, propNames, ref nodeCount, maxNodes, ref truncated);
+            var rootDto = this.BuildNodeDtoRecursive(rootItem, 0, effectiveMaxDepth, propNames, ref nodeCount, maxNodes, ref truncated);
 
             return new VisualTreeResultDto
             {
@@ -318,10 +321,12 @@ public sealed class SnoopInspector : ISnoopInspector, IDisposable
         int take,
         CancellationToken ct)
     {
+        int effectiveTake = Math.Min(Math.Max(take, 1), InputConstants.MaxPageSize);
+
         // If we have an existing cursor, serve from snapshot (resolve IDs on Dispatcher).
         if (cursor is not null)
         {
-            var existingPage = this.cursorManager.GetPage(cursor, take);
+            var existingPage = this.cursorManager.GetPage(cursor, effectiveTake);
 
             if (existingPage.Items.Count > 0 || (!existingPage.HasMore && !existingPage.Stale))
             {
@@ -403,7 +408,7 @@ public sealed class SnoopInspector : ISnoopInspector, IDisposable
 
                 var allIds = windows.Select(w => this.nodeRegistry.GetOrCreateId(w)).ToList();
                 var newCursor = this.cursorManager.CreateCursor(allIds);
-                var firstPage = this.cursorManager.GetPage(newCursor, take);
+                var firstPage = this.cursorManager.GetPage(newCursor, effectiveTake);
 
                 var windowDtos = new List<NodeDto>(firstPage.Items.Count);
                 foreach (var id in firstPage.Items)
@@ -452,7 +457,7 @@ public sealed class SnoopInspector : ISnoopInspector, IDisposable
 
             // Build the first page.
             var snapshotCursor = this.cursorManager.CreateCursor(childIds);
-            var childPage = this.cursorManager.GetPage(snapshotCursor, take);
+            var childPage = this.cursorManager.GetPage(snapshotCursor, effectiveTake);
 
             // Resolve child items to DTOs.
             var childItemMap = new Dictionary<string, TreeItem>();
@@ -591,6 +596,8 @@ public sealed class SnoopInspector : ISnoopInspector, IDisposable
     {
         return this.RunOnDispatcherAsync(() =>
         {
+            int effectiveTake = Math.Min(Math.Max(take, 1), InputConstants.MaxPageSize);
+
             var target = this.ResolveNodeOrThrow(nodeId);
             this.VerifyElementConnectivity(target, nodeId);
 
@@ -649,9 +656,10 @@ public sealed class SnoopInspector : ISnoopInspector, IDisposable
 
             // Properties are sorted by name by PropertyInformation.GetProperties (calls Sort()).
             // Paginate using index-based cursor snapshot.
+            // Honor cursor: re-use existing snapshot when provided; create one only on first call.
             var nodeIds = allDtos.Select((_, i) => i.ToString()).ToList();
-            var cursorToken = this.cursorManager.CreateCursor(nodeIds);
-            var page = this.cursorManager.GetPage(cursorToken, take);
+            var cursorToken = !string.IsNullOrEmpty(cursor) ? cursor : this.cursorManager.CreateCursor(nodeIds);
+            var page = this.cursorManager.GetPage(cursorToken, effectiveTake);
 
             var pageItems = new List<PropertyDto>(page.Items.Count);
             foreach (var idxStr in page.Items)
@@ -740,6 +748,8 @@ public sealed class SnoopInspector : ISnoopInspector, IDisposable
     {
         return this.RunOnDispatcherAsync(() =>
         {
+            int effectiveTake = Math.Min(Math.Max(take, 1), InputConstants.MaxPageSize);
+
             object target;
 
             if (nodeId is not null)
@@ -791,10 +801,10 @@ public sealed class SnoopInspector : ISnoopInspector, IDisposable
                 };
             }).ToList();
 
-            // Paginate.
+            // Paginate. Honor cursor: re-use existing snapshot when provided; create one only on first call.
             var snapIds = dtos.Select((_, i) => i.ToString()).ToList();
-            var cursorToken = this.cursorManager.CreateCursor(snapIds);
-            var page = this.cursorManager.GetPage(cursorToken, take);
+            var cursorToken = !string.IsNullOrEmpty(cursor) ? cursor : this.cursorManager.CreateCursor(snapIds);
+            var page = this.cursorManager.GetPage(cursorToken, effectiveTake);
 
             var pageItems = new List<DiagnosticItemDto>(page.Items.Count);
             foreach (var idxStr in page.Items)
@@ -1317,6 +1327,8 @@ public sealed class SnoopInspector : ISnoopInspector, IDisposable
     {
         return this.RunOnDispatcherAsync(() =>
         {
+            int effectiveTake = Math.Min(Math.Max(take, 1), InputConstants.MaxPageSize);
+
             object target;
 
             if (nodeId is not null)
@@ -1345,10 +1357,10 @@ public sealed class SnoopInspector : ISnoopInspector, IDisposable
 
             var resources = ResourceInspector.GetResources(depObj, resourceKey, this.options.EnableRedaction);
 
-            // Paginate using index-based cursor snapshot.
+            // Paginate. Honor cursor: re-use existing snapshot when provided; create one only on first call.
             var snapIds = resources.Select((_, i) => i.ToString()).ToList();
-            var cursorToken = this.cursorManager.CreateCursor(snapIds);
-            var page = this.cursorManager.GetPage(cursorToken, take);
+            var cursorToken = !string.IsNullOrEmpty(cursor) ? cursor : this.cursorManager.CreateCursor(snapIds);
+            var page = this.cursorManager.GetPage(cursorToken, effectiveTake);
 
             var pageItems = new List<ResourceDto>(page.Items.Count);
             foreach (var idxStr in page.Items)

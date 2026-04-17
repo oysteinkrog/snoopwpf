@@ -18,7 +18,7 @@ using SnoopWPF.Agent.BrokerHost;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The broker + target round-trip over all 18 tools (M2-21 acceptance criterion) requires
+/// The broker + target round-trip over all 27 tools (M2-21 acceptance criterion) requires
 /// a live WPF application and is marked <see cref="CategoryAttribute"/> MANUAL_VERIFICATION
 /// because the full-round-trip path depends on M2-19 (brokered-mode consumer deliverables)
 /// and the injection EXE being available on the CI agent.
