@@ -455,6 +455,220 @@ public sealed class PipeAgentServer : IDisposable
                 var result = await this.inspector.SetSliderValueAsync(p.NodeId, p.Value, p.Normalized, ct).ConfigureAwait(false);
                 return JsonFramedSerializer.SerializeToString(result);
             },
+
+            // ── WpfLocator overloads ─────────────────────────────────────────
+
+            ["GetVisualTreeByLocator"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<GetVisualTreeByLocatorParams>(paramsJson);
+                var result = await this.inspector.GetVisualTreeAsync(p.Locator, p.MaxDepth, p.TreeType, p.IncludeProperties, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["GetChildrenByLocator"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<GetChildrenByLocatorParams>(paramsJson);
+                var result = await this.inspector.GetChildrenAsync(p.Locator, p.TreeType, p.Cursor, p.Take, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["GetAncestorsByLocator"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<GetAncestorsByLocatorParams>(paramsJson);
+                var result = await this.inspector.GetAncestorsAsync(p.Locator, p.MaxLevels, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["InspectElementByLocator"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<ByLocatorParams>(paramsJson);
+                var result = await this.inspector.InspectElementAsync(p.Locator, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["GetPropertiesByLocator"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<GetPropertiesByLocatorParams>(paramsJson);
+                var result = await this.inspector.GetPropertiesAsync(p.Locator, p.Filter, p.Category, p.IncludeDefaults, p.Cursor, p.Take, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["SetPropertyByLocator"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<SetPropertyByLocatorParams>(paramsJson);
+                var result = await this.inspector.SetPropertyAsync(p.Locator, p.PropertyName, p.Value, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["GetBindingInfoByLocator"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<GetBindingInfoByLocatorParams>(paramsJson);
+                var result = await this.inspector.GetBindingInfoAsync(p.Locator, p.PropertyName, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["RunDiagnosticsByLocator"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<RunDiagnosticsByLocatorParams>(paramsJson);
+                var result = await this.inspector.RunDiagnosticsAsync(p.Locator, p.Providers, p.MinLevel, p.Cursor, p.Take, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["GetResourcesByLocator"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<GetResourcesByLocatorParams>(paramsJson);
+                var result = await this.inspector.GetResourcesAsync(p.Locator, p.ResourceKey, p.Cursor, p.Take, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["CaptureScreenshotByLocator"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<ByLocatorParams>(paramsJson);
+                var result = await this.inspector.CaptureScreenshotAsync(p.Locator, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["GetTriggersByLocator"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<ByLocatorParams>(paramsJson);
+                var result = await this.inspector.GetTriggersAsync(p.Locator, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["GetBehaviorsByLocator"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<ByLocatorParams>(paramsJson);
+                var result = await this.inspector.GetBehaviorsAsync(p.Locator, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            // ── New nodeId methods ───────────────────────────────────────────
+
+            ["SelectItem"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<SelectItemParams>(paramsJson);
+                var result = await this.inspector.SelectItemAsync(p.NodeId, p.Identifier, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["SelectItemByLocator"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<SelectItemByLocatorParams>(paramsJson);
+                var result = await this.inspector.SelectItemAsync(p.Locator, p.Identifier, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["SetCheckState"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<SetCheckStateParams>(paramsJson);
+                var result = await this.inspector.SetCheckStateAsync(p.NodeId, p.State, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["SetCheckStateByLocator"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<SetCheckStateByLocatorParams>(paramsJson);
+                var result = await this.inspector.SetCheckStateAsync(p.Locator, p.State, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["SetTextValueByLocator"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<SetTextValueByLocatorParams>(paramsJson);
+                var result = await this.inspector.SetTextValueAsync(p.Locator, p.Value, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["SetSliderValueByLocator"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<SetSliderValueByLocatorParams>(paramsJson);
+                var result = await this.inspector.SetSliderValueAsync(p.Locator, p.Value, p.Normalized, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["ExecuteCommandByLocator"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<ByLocatorParams>(paramsJson);
+                var result = await this.inspector.ExecuteCommandAsync(p.Locator, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["Click"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<NodeIdOnlyParams>(paramsJson);
+                var result = await this.inspector.ClickAsync(p.NodeId, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["ClickByLocator"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<ByLocatorParams>(paramsJson);
+                var result = await this.inspector.ClickAsync(p.Locator, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["Toggle"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<NodeIdOnlyParams>(paramsJson);
+                var result = await this.inspector.ToggleAsync(p.NodeId, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["ToggleByLocator"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<ByLocatorParams>(paramsJson);
+                var result = await this.inspector.ToggleAsync(p.Locator, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["ExpandCollapse"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<ExpandCollapseParams>(paramsJson);
+                var result = await this.inspector.ExpandCollapseAsync(p.NodeId, p.Action, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["ExpandCollapseByLocator"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<ExpandCollapseByLocatorParams>(paramsJson);
+                var result = await this.inspector.ExpandCollapseAsync(p.Locator, p.Action, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["ResolveBinding"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<GetBindingInfoParams>(paramsJson);
+                var result = await this.inspector.ResolveBindingAsync(p.NodeId, p.PropertyName, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["ResolveBindingByLocator"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<GetBindingInfoByLocatorParams>(paramsJson);
+                var result = await this.inspector.ResolveBindingAsync(p.Locator, p.PropertyName, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["WaitForProperty"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<WaitForPropertyParams>(paramsJson);
+                var result = await this.inspector.WaitForPropertyAsync(p.Locator, p.PropertyName, p.ExpectedValue, p.TimeoutMs, p.PresenceExpected, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["PollChanges"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<PollChangesParams>(paramsJson);
+                var result = await this.inspector.PollChangesAsync(p.SinceVersion, p.RootLocator, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
+
+            ["PumpUntilIdle"] = async (paramsJson, ct) =>
+            {
+                var p = JsonFramedSerializer.DeserializeString<PumpUntilIdleParams>(paramsJson);
+                var result = await this.inspector.PumpUntilIdleAsync(p.TimeoutMs, p.Resources, ct).ConfigureAwait(false);
+                return JsonFramedSerializer.SerializeToString(result);
+            },
         };
     }
 
@@ -774,5 +988,267 @@ internal sealed class SetSliderValueParams
 
     [System.Runtime.Serialization.DataMember(Name = "normalized")]
     public bool Normalized { get; set; }
+}
+
+// ── WpfLocator-only DTOs ───────────────────────────────────────────────────
+
+/// <summary>Generic single-locator param DTO (for methods that only take a locator + ct).</summary>
+[System.Runtime.Serialization.DataContract]
+internal sealed class ByLocatorParams
+{
+    [System.Runtime.Serialization.DataMember(Name = "locator")]
+    public SnoopWPF.Agent.Contracts.WpfLocator Locator { get; set; } = new SnoopWPF.Agent.Contracts.WpfLocator();
+}
+
+/// <summary>Generic single-nodeId param DTO (for methods that only take a nodeId + ct).</summary>
+[System.Runtime.Serialization.DataContract]
+internal sealed class NodeIdOnlyParams
+{
+    [System.Runtime.Serialization.DataMember(Name = "nodeId")]
+    public string NodeId { get; set; } = string.Empty;
+}
+
+[System.Runtime.Serialization.DataContract]
+internal sealed class GetVisualTreeByLocatorParams
+{
+    [System.Runtime.Serialization.DataMember(Name = "locator")]
+    public SnoopWPF.Agent.Contracts.WpfLocator Locator { get; set; } = new SnoopWPF.Agent.Contracts.WpfLocator();
+
+    [System.Runtime.Serialization.DataMember(Name = "maxDepth")]
+    public int MaxDepth { get; set; } = 5;
+
+    [System.Runtime.Serialization.DataMember(Name = "treeType")]
+    public string TreeType { get; set; } = "Visual";
+
+    [System.Runtime.Serialization.DataMember(Name = "includeProperties")]
+    public System.Collections.Generic.List<string>? IncludeProperties { get; set; }
+}
+
+[System.Runtime.Serialization.DataContract]
+internal sealed class GetChildrenByLocatorParams
+{
+    [System.Runtime.Serialization.DataMember(Name = "locator")]
+    public SnoopWPF.Agent.Contracts.WpfLocator Locator { get; set; } = new SnoopWPF.Agent.Contracts.WpfLocator();
+
+    [System.Runtime.Serialization.DataMember(Name = "treeType")]
+    public string TreeType { get; set; } = "Visual";
+
+    [System.Runtime.Serialization.DataMember(Name = "cursor")]
+    public string? Cursor { get; set; }
+
+    [System.Runtime.Serialization.DataMember(Name = "take")]
+    public int Take { get; set; } = 50;
+}
+
+[System.Runtime.Serialization.DataContract]
+internal sealed class GetAncestorsByLocatorParams
+{
+    [System.Runtime.Serialization.DataMember(Name = "locator")]
+    public SnoopWPF.Agent.Contracts.WpfLocator Locator { get; set; } = new SnoopWPF.Agent.Contracts.WpfLocator();
+
+    [System.Runtime.Serialization.DataMember(Name = "maxLevels")]
+    public int? MaxLevels { get; set; }
+}
+
+[System.Runtime.Serialization.DataContract]
+internal sealed class GetPropertiesByLocatorParams
+{
+    [System.Runtime.Serialization.DataMember(Name = "locator")]
+    public SnoopWPF.Agent.Contracts.WpfLocator Locator { get; set; } = new SnoopWPF.Agent.Contracts.WpfLocator();
+
+    [System.Runtime.Serialization.DataMember(Name = "filter")]
+    public string? Filter { get; set; }
+
+    [System.Runtime.Serialization.DataMember(Name = "category")]
+    public string? Category { get; set; }
+
+    [System.Runtime.Serialization.DataMember(Name = "includeDefaults")]
+    public bool IncludeDefaults { get; set; }
+
+    [System.Runtime.Serialization.DataMember(Name = "cursor")]
+    public string? Cursor { get; set; }
+
+    [System.Runtime.Serialization.DataMember(Name = "take")]
+    public int Take { get; set; } = 50;
+}
+
+[System.Runtime.Serialization.DataContract]
+internal sealed class SetPropertyByLocatorParams
+{
+    [System.Runtime.Serialization.DataMember(Name = "locator")]
+    public SnoopWPF.Agent.Contracts.WpfLocator Locator { get; set; } = new SnoopWPF.Agent.Contracts.WpfLocator();
+
+    [System.Runtime.Serialization.DataMember(Name = "propertyName")]
+    public string PropertyName { get; set; } = string.Empty;
+
+    [System.Runtime.Serialization.DataMember(Name = "value")]
+    public string Value { get; set; } = string.Empty;
+}
+
+[System.Runtime.Serialization.DataContract]
+internal sealed class GetBindingInfoByLocatorParams
+{
+    [System.Runtime.Serialization.DataMember(Name = "locator")]
+    public SnoopWPF.Agent.Contracts.WpfLocator Locator { get; set; } = new SnoopWPF.Agent.Contracts.WpfLocator();
+
+    [System.Runtime.Serialization.DataMember(Name = "propertyName")]
+    public string PropertyName { get; set; } = string.Empty;
+}
+
+[System.Runtime.Serialization.DataContract]
+internal sealed class RunDiagnosticsByLocatorParams
+{
+    [System.Runtime.Serialization.DataMember(Name = "locator")]
+    public SnoopWPF.Agent.Contracts.WpfLocator Locator { get; set; } = new SnoopWPF.Agent.Contracts.WpfLocator();
+
+    [System.Runtime.Serialization.DataMember(Name = "providers")]
+    public System.Collections.Generic.List<string>? Providers { get; set; }
+
+    [System.Runtime.Serialization.DataMember(Name = "minLevel")]
+    public string? MinLevel { get; set; }
+
+    [System.Runtime.Serialization.DataMember(Name = "cursor")]
+    public string? Cursor { get; set; }
+
+    [System.Runtime.Serialization.DataMember(Name = "take")]
+    public int Take { get; set; } = 50;
+}
+
+[System.Runtime.Serialization.DataContract]
+internal sealed class GetResourcesByLocatorParams
+{
+    [System.Runtime.Serialization.DataMember(Name = "locator")]
+    public SnoopWPF.Agent.Contracts.WpfLocator Locator { get; set; } = new SnoopWPF.Agent.Contracts.WpfLocator();
+
+    [System.Runtime.Serialization.DataMember(Name = "resourceKey")]
+    public string? ResourceKey { get; set; }
+
+    [System.Runtime.Serialization.DataMember(Name = "cursor")]
+    public string? Cursor { get; set; }
+
+    [System.Runtime.Serialization.DataMember(Name = "take")]
+    public int Take { get; set; } = 50;
+}
+
+[System.Runtime.Serialization.DataContract]
+internal sealed class SelectItemParams
+{
+    [System.Runtime.Serialization.DataMember(Name = "nodeId")]
+    public string NodeId { get; set; } = string.Empty;
+
+    [System.Runtime.Serialization.DataMember(Name = "identifier")]
+    public string Identifier { get; set; } = string.Empty;
+}
+
+[System.Runtime.Serialization.DataContract]
+internal sealed class SelectItemByLocatorParams
+{
+    [System.Runtime.Serialization.DataMember(Name = "locator")]
+    public SnoopWPF.Agent.Contracts.WpfLocator Locator { get; set; } = new SnoopWPF.Agent.Contracts.WpfLocator();
+
+    [System.Runtime.Serialization.DataMember(Name = "identifier")]
+    public string Identifier { get; set; } = string.Empty;
+}
+
+[System.Runtime.Serialization.DataContract]
+internal sealed class SetCheckStateParams
+{
+    [System.Runtime.Serialization.DataMember(Name = "nodeId")]
+    public string NodeId { get; set; } = string.Empty;
+
+    [System.Runtime.Serialization.DataMember(Name = "state")]
+    public string State { get; set; } = string.Empty;
+}
+
+[System.Runtime.Serialization.DataContract]
+internal sealed class SetCheckStateByLocatorParams
+{
+    [System.Runtime.Serialization.DataMember(Name = "locator")]
+    public SnoopWPF.Agent.Contracts.WpfLocator Locator { get; set; } = new SnoopWPF.Agent.Contracts.WpfLocator();
+
+    [System.Runtime.Serialization.DataMember(Name = "state")]
+    public string State { get; set; } = string.Empty;
+}
+
+[System.Runtime.Serialization.DataContract]
+internal sealed class SetTextValueByLocatorParams
+{
+    [System.Runtime.Serialization.DataMember(Name = "locator")]
+    public SnoopWPF.Agent.Contracts.WpfLocator Locator { get; set; } = new SnoopWPF.Agent.Contracts.WpfLocator();
+
+    [System.Runtime.Serialization.DataMember(Name = "value")]
+    public string Value { get; set; } = string.Empty;
+}
+
+[System.Runtime.Serialization.DataContract]
+internal sealed class SetSliderValueByLocatorParams
+{
+    [System.Runtime.Serialization.DataMember(Name = "locator")]
+    public SnoopWPF.Agent.Contracts.WpfLocator Locator { get; set; } = new SnoopWPF.Agent.Contracts.WpfLocator();
+
+    [System.Runtime.Serialization.DataMember(Name = "value")]
+    public double Value { get; set; }
+
+    [System.Runtime.Serialization.DataMember(Name = "normalized")]
+    public bool Normalized { get; set; }
+}
+
+[System.Runtime.Serialization.DataContract]
+internal sealed class ExpandCollapseParams
+{
+    [System.Runtime.Serialization.DataMember(Name = "nodeId")]
+    public string NodeId { get; set; } = string.Empty;
+
+    [System.Runtime.Serialization.DataMember(Name = "action")]
+    public string Action { get; set; } = string.Empty;
+}
+
+[System.Runtime.Serialization.DataContract]
+internal sealed class ExpandCollapseByLocatorParams
+{
+    [System.Runtime.Serialization.DataMember(Name = "locator")]
+    public SnoopWPF.Agent.Contracts.WpfLocator Locator { get; set; } = new SnoopWPF.Agent.Contracts.WpfLocator();
+
+    [System.Runtime.Serialization.DataMember(Name = "action")]
+    public string Action { get; set; } = string.Empty;
+}
+
+[System.Runtime.Serialization.DataContract]
+internal sealed class WaitForPropertyParams
+{
+    [System.Runtime.Serialization.DataMember(Name = "locator")]
+    public SnoopWPF.Agent.Contracts.WpfLocator Locator { get; set; } = new SnoopWPF.Agent.Contracts.WpfLocator();
+
+    [System.Runtime.Serialization.DataMember(Name = "propertyName")]
+    public string PropertyName { get; set; } = string.Empty;
+
+    [System.Runtime.Serialization.DataMember(Name = "expectedValue")]
+    public string? ExpectedValue { get; set; }
+
+    [System.Runtime.Serialization.DataMember(Name = "timeoutMs")]
+    public int TimeoutMs { get; set; } = 5000;
+
+    [System.Runtime.Serialization.DataMember(Name = "presenceExpected")]
+    public string PresenceExpected { get; set; } = "present";
+}
+
+[System.Runtime.Serialization.DataContract]
+internal sealed class PollChangesParams
+{
+    [System.Runtime.Serialization.DataMember(Name = "sinceVersion")]
+    public long SinceVersion { get; set; }
+
+    [System.Runtime.Serialization.DataMember(Name = "rootLocator")]
+    public SnoopWPF.Agent.Contracts.WpfLocator? RootLocator { get; set; }
+}
+
+[System.Runtime.Serialization.DataContract]
+internal sealed class PumpUntilIdleParams
+{
+    [System.Runtime.Serialization.DataMember(Name = "timeoutMs")]
+    public int TimeoutMs { get; set; } = 5000;
+
+    [System.Runtime.Serialization.DataMember(Name = "resources")]
+    public System.Collections.Generic.List<string>? Resources { get; set; }
 }
 #pragma warning restore CA1812
