@@ -89,11 +89,31 @@ public sealed partial class SnoopInspector
                 case "SET_TEXT":
                     delta = await this.SetTextValueAsync(nodeId, step.Value ?? string.Empty, ct).ConfigureAwait(false);
                     break;
+                case "SET_SLIDER":
+                {
+                    if (!double.TryParse(
+                            step.Value,
+                            System.Globalization.NumberStyles.Float,
+                            System.Globalization.CultureInfo.InvariantCulture,
+                            out var sliderValue))
+                    {
+                        resultShell.Success = false;
+                        resultShell.ErrorCode = SnoopErrorCode.InvalidArgument.ToString();
+                        resultShell.ErrorMessage =
+                            $"SET_SLIDER step requires a numeric 'value' (got '{step.Value}'). " +
+                            "Supply an absolute number (e.g. \"0.5\") or a normalized fraction in [0,1] with normalized=true.";
+                        return resultShell;
+                    }
+
+                    delta = await this.SetSliderValueAsync(nodeId, sliderValue, step.Normalized, ct).ConfigureAwait(false);
+                    break;
+                }
+
                 default:
                     resultShell.Success = false;
                     resultShell.ErrorCode = SnoopErrorCode.InvalidArgument.ToString();
                     resultShell.ErrorMessage =
-                        $"Unknown action type '{step.Type}'. Supported: click, double_click, execute_command, set_text.";
+                        $"Unknown action type '{step.Type}'. Supported: click, double_click, execute_command, set_text, set_slider.";
                     return resultShell;
             }
 

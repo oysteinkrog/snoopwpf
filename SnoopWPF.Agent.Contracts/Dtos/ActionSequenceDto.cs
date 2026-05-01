@@ -23,11 +23,21 @@ public sealed class ActionStepDto
     public string NodeId { get; set; } = string.Empty;
 
     /// <summary>
-    /// Step-specific payload. Used by <c>set_text</c> (the text to set).
+    /// Step-specific payload. Used by <c>set_text</c> (the text to set) and
+    /// <c>set_slider</c> (the numeric value as a string, parsed to <c>double</c>).
     /// Ignored by <c>click</c> / <c>execute_command</c> / <c>double_click</c>.
     /// </summary>
     [DataMember(Name = "value")]
     public string? Value { get; set; }
+
+    /// <summary>
+    /// Used by <c>set_slider</c> only. When <see langword="true"/>, <see cref="Value"/>
+    /// is interpreted as a fraction in [0.0, 1.0] mapped to the slider's
+    /// [Minimum, Maximum] range.  When <see langword="false"/> (default), <see cref="Value"/>
+    /// is an absolute numeric value (WPF clamps it to the valid range automatically).
+    /// </summary>
+    [DataMember(Name = "normalized")]
+    public bool Normalized { get; set; }
 }
 
 /// <summary>
