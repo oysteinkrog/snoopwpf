@@ -378,10 +378,25 @@ public interface ISnoopInspector
     /// Blocks until the WPF dispatcher and all monitored idling resources are simultaneously
     /// idle, or until <paramref name="timeoutMs"/> elapses (PRD §5.4, §8.2, M2-11).
     /// </summary>
+    /// <param name="timeoutMs">Desired wait ceiling in ms. Clamped to [1, <paramref name="maxTimeoutMs"/>].</param>
+    /// <param name="resources">Optional filter — names of resources to monitor. Null = all built-in resources.</param>
+    /// <param name="maxTimeoutMs">
+    /// Hard ceiling in ms. Default <see langword="null"/> applies the built-in default of 30 000 ms.
+    /// Caller may raise this up to 60 000 ms for long perf-profiling scenarios.
+    /// </param>
+    /// <param name="waitForLayoutQuiescence">
+    /// When <see langword="true"/>, a <c>LayoutUpdatedIdlingResource</c> is AND-gated into the
+    /// quiescence check: the call does not return until no <c>LayoutUpdated</c> events have fired
+    /// for one full <c>ContextIdle</c> tick.  Defaults to <see langword="false"/> to preserve
+    /// existing behaviour for callers that do not need this extra gate.
+    /// </param>
+    /// <param name="ct">Cancellation token.</param>
     Task<Dtos.PumpUntilIdleResultDto> PumpUntilIdleAsync(
         int timeoutMs,
         IReadOnlyList<string>? resources,
-        CancellationToken ct);
+        CancellationToken ct,
+        int? maxTimeoutMs = null,
+        bool waitForLayoutQuiescence = false);
 
     // ── M2-10: wpf_poll_changes ───────────────────────────────────────────────
 

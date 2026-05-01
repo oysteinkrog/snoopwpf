@@ -680,10 +680,15 @@ public sealed class PipeSnoopInspectorProxy : ISnoopInspector, IAsyncDisposable,
             ct);
 
     /// <inheritdoc/>
-    public Task<PumpUntilIdleResultDto> PumpUntilIdleAsync(int timeoutMs, IReadOnlyList<string>? resources, CancellationToken ct)
+    public Task<PumpUntilIdleResultDto> PumpUntilIdleAsync(
+        int timeoutMs,
+        IReadOnlyList<string>? resources,
+        CancellationToken ct,
+        int? maxTimeoutMs = null,
+        bool waitForLayoutQuiescence = false)
         => this.InvokeAsync<PumpUntilIdleResultDto>(
             "PumpUntilIdle",
-            new { timeoutMs, resources },
+            new { timeoutMs, resources, maxTimeoutMs, waitForLayoutQuiescence },
             ct);
 
     // ── WS3: wpf_double_click, wpf_select_item_by_scroll, wpf_select_item_by_index, wpf_get_list_items ──

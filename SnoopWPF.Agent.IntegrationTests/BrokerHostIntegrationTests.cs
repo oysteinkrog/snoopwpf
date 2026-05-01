@@ -356,7 +356,7 @@ public sealed class BrokerHostIntegrationTests
 
         public Task<PollChangesResultDto> PollChangesAsync(long sinceVersion, WpfLocator? rootLocator, CancellationToken ct) => throw new NotImplementedException();
 
-        public Task<PumpUntilIdleResultDto> PumpUntilIdleAsync(int timeoutMs, IReadOnlyList<string>? resources, CancellationToken ct) => throw new NotImplementedException();
+        public Task<PumpUntilIdleResultDto> PumpUntilIdleAsync(int timeoutMs, IReadOnlyList<string>? resources, CancellationToken ct, int? maxTimeoutMs = null, bool waitForLayoutQuiescence = false) => throw new NotImplementedException();
 
         public Task<StateDeltaDto> DoubleClickAsync(string nodeId, CancellationToken ct) => throw new NotImplementedException();
 

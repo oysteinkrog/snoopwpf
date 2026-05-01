@@ -692,7 +692,10 @@ public sealed class PipeAgentServer : IDisposable
             ["PumpUntilIdle"] = async (paramsJson, ct) =>
             {
                 var p = JsonFramedSerializer.DeserializeString<PumpUntilIdleParams>(paramsJson);
-                var result = await this.inspector.PumpUntilIdleAsync(p.TimeoutMs, p.Resources, ct).ConfigureAwait(false);
+                var result = await this.inspector.PumpUntilIdleAsync(
+                    p.TimeoutMs, p.Resources, ct,
+                    maxTimeoutMs: p.MaxTimeoutMs,
+                    waitForLayoutQuiescence: p.WaitForLayoutQuiescence).ConfigureAwait(false);
                 return JsonFramedSerializer.SerializeToString(result);
             },
 
@@ -1333,10 +1336,16 @@ internal sealed class PollChangesParams
 internal sealed class PumpUntilIdleParams
 {
     [System.Runtime.Serialization.DataMember(Name = "timeoutMs")]
-    public int TimeoutMs { get; set; } = 5000;
+    public int TimeoutMs { get; set; } = 30000;
 
     [System.Runtime.Serialization.DataMember(Name = "resources")]
     public List<string>? Resources { get; set; }
+
+    [System.Runtime.Serialization.DataMember(Name = "maxTimeoutMs")]
+    public int? MaxTimeoutMs { get; set; }
+
+    [System.Runtime.Serialization.DataMember(Name = "waitForLayoutQuiescence")]
+    public bool WaitForLayoutQuiescence { get; set; }
 }
 
 [System.Runtime.Serialization.DataContract]

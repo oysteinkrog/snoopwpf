@@ -177,7 +177,9 @@ public sealed partial class SnoopInspector
     public async Task<Contracts.Dtos.PumpUntilIdleResultDto> PumpUntilIdleAsync(
         int timeoutMs,
         IReadOnlyList<string>? resources,
-        CancellationToken ct)
+        CancellationToken ct,
+        int? maxTimeoutMs = null,
+        bool waitForLayoutQuiescence = false)
     {
         this.ThrowIfDisposed();
 
@@ -191,13 +193,16 @@ public sealed partial class SnoopInspector
                 suggestions: new[] { SnoopSuggestions.DispatcherBusy });
         }
 
-        // 5-second animation-runaway ceiling (PRD §8.2 W3-H2).
-        const int MaxTimeoutMs = 5000;
-        var clampedTimeout = Math.Min(timeoutMs, MaxTimeoutMs);
+        // Configurable animation-runaway ceiling (PRD §8.2 W3-H2).
+        // Default is 30 000 ms; callers may raise up to 60 000 ms for perf-profiling scenarios.
+        const int DefaultMaxTimeoutMs = 30_000;
+        const int AbsoluteMaxTimeoutMs = 60_000;
+        var effectiveMax = Math.Min(maxTimeoutMs ?? DefaultMaxTimeoutMs, AbsoluteMaxTimeoutMs);
+        var clampedTimeout = Math.Min(timeoutMs, effectiveMax);
 
         try
         {
-            return await this.PumpUntilIdleCoreAsync(clampedTimeout, resources, ct).ConfigureAwait(false);
+            return await this.PumpUntilIdleCoreAsync(clampedTimeout, resources, waitForLayoutQuiescence, ct).ConfigureAwait(false);
         }
         finally
         {
@@ -208,6 +213,7 @@ public sealed partial class SnoopInspector
     private async Task<Contracts.Dtos.PumpUntilIdleResultDto> PumpUntilIdleCoreAsync(
         int timeoutMs,
         IReadOnlyList<string>? resources,
+        bool waitForLayoutQuiescence,
         CancellationToken ct)
     {
         // Build the set of resource names to monitor (null/empty = all built-in resources).
@@ -226,6 +232,14 @@ public sealed partial class SnoopInspector
                 new DispatcherIdlingResource(this.dispatcher),
                 new CompositionRenderingResource(this.dispatcher),
             };
+
+            // Opt-in: AND-gate a LayoutUpdated quiescence resource when the caller requests it.
+            // This detects WPF layout passes and defers idle until no LayoutUpdated event fires
+            // for one full ContextIdle tick after the last layout pass.
+            if (waitForLayoutQuiescence)
+            {
+                list.Add(new LayoutUpdatedIdlingResource(this.dispatcher));
+            }
 
             // Apply resource name filter if specified.
             if (filterNames is not null)

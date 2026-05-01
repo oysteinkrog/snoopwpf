@@ -389,7 +389,7 @@ public sealed class FakeSnoopInspector : ISnoopInspector
         return Task.FromResult(new PollChangesResultDto { TreeVersion = sinceVersion, SinceVersion = sinceVersion });
     }
 
-    public Task<PumpUntilIdleResultDto> PumpUntilIdleAsync(int timeoutMs, IReadOnlyList<string>? resources, CancellationToken ct)
+    public Task<PumpUntilIdleResultDto> PumpUntilIdleAsync(int timeoutMs, IReadOnlyList<string>? resources, CancellationToken ct, int? maxTimeoutMs = null, bool waitForLayoutQuiescence = false)
     {
         if (this.OnPumpUntilIdle is not null)
         {
